@@ -1,4 +1,5 @@
-﻿using SSDK.AI.KBS;
+﻿using SSDK.AI.Agent.Info;
+using SSDK.AI.KBS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,11 @@ namespace SSDK.AI.Agent
         public AgentProblemSpace CurrentProblemSpace { get; private set; }
 
         /// <summary>
+        /// Gets or sets additional information about the agent.
+        /// </summary>
+        public AgentInfo Info { get; set; }
+
+        /// <summary>
         /// Gets or sets the desired problem space, which contains what the agent wants to perceive.
         /// </summary>
         public AgentProblemSpace DesiredProblemSpace { get; set; }
@@ -66,11 +72,13 @@ namespace SSDK.AI.Agent
         /// <param name="actionSpace">the space containing the set of all possible actions the agent can perform</param>
         /// <param name="problem">the problem which the agent has initially</param>
         /// <param name="solver">a solver for th a</param>
-        public Agent(AgentActionSpace actionSpace, AgentProblemSpace problem, AgentSolver solver)
+        /// <param name="info">additional agent information (does not affect the agent)</param>
+        public Agent(AgentActionSpace actionSpace, AgentProblemSpace problem, AgentSolver solver, AgentInfo info=null)
         {
             ActionSpace = actionSpace;
             CurrentProblemSpace = problem;
             Solver = solver;
+            Info = info;
         }
 
         /// <summary>

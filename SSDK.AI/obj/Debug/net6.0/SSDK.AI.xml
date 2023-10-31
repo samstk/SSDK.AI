@@ -40,6 +40,11 @@
             methods to predict for some operations.
             </summary>
         </member>
+        <member name="P:SSDK.AI.Agent.Agent.Info">
+            <summary>
+            Gets or sets additional information about the agent.
+            </summary>
+        </member>
         <member name="P:SSDK.AI.Agent.Agent.DesiredProblemSpace">
             <summary>
             Gets or sets the desired problem space, which contains what the agent wants to perceive.
@@ -52,7 +57,7 @@
             our desired spaces are reached sequentially.
             </summary>
         </member>
-        <member name="M:SSDK.AI.Agent.Agent.#ctor(SSDK.AI.Agent.AgentActionSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentSolver)">
+        <member name="M:SSDK.AI.Agent.Agent.#ctor(SSDK.AI.Agent.AgentActionSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentSolver,SSDK.AI.Agent.Info.AgentInfo)">
             <summary>
             Constructs an agent for the sole purpose of deploying actions in the action space,
             to solve the problem defined in the problem space.
@@ -60,6 +65,7 @@
             <param name="actionSpace">the space containing the set of all possible actions the agent can perform</param>
             <param name="problem">the problem which the agent has initially</param>
             <param name="solver">a solver for th a</param>
+            <param name="info">additional agent information (does not affect the agent)</param>
         </member>
         <member name="M:SSDK.AI.Agent.Agent.Guide(SSDK.AI.Agent.AgentProblemSpace[])">
             <summary>
@@ -545,6 +551,310 @@
             <param name="agent">the agent that needs solving</param>
             <param name="operation">the current operation of the agent</param>
             <returns>true if there are no problems with the operation</returns>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentComputationalLimits">
+            <summary>
+            Depicts how the agent uses its available computation power to
+            act within the world.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentComputationalLimits.Undefined">
+            <summary>
+            No information is provided about the computational limits, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentComputationalLimits.PerfectRationality">
+            <summary>
+            Depicts that the agent has perfect rationality.
+            That is, it will attempt to use any amount of computation without
+            considerations for limits, in order to determine the best course of action.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentComputationalLimits.BoundedRationality">
+            <summary>
+            Depicts that the agent makes use of available computation and memory limitations
+            in order to determine good decisions within these limits.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentCoordination">
+            <summary>
+            Depicts how the agent co-ordinates with other agents.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentCoordination.Undefined">
+            <summary>
+            No information is provided about the co-ordination, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentCoordination.SingleAgent">
+            <summary>
+            Depicts that the agent does not have any knowledge of other agents, and
+            does not need to collaborate with them.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentCoordination.MultipleAgents">
+            <summary>
+            Depicts that the agent needs to reason strategically around other agents.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentEffectUncertainty">
+            <summary>
+            Depicts whether an agent can determine its resulting environment 
+            state from its initial state and next action
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentEffectUncertainty.Undefined">
+            <summary>
+            No information is provided about effect uncertainty, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentEffectUncertainty.Deterministic">
+            <summary>
+            Depicts that the agent can predict the exact state from any state
+            and action.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentEffectUncertainty.Stochastic">
+            <summary>
+            Depicts that the agent cannot predict the exact state from any state
+            and action. 
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentInfo">
+            <summary>
+            Contains information relevant to the environment that an agent acts within.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.Modularity">
+            <summary>
+            Gets or sets the modularity information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.PlanningHorizon">
+            <summary>
+            Gets or sets the planning horizon information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.Representation">
+            <summary>
+            Gets or sets the representation information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.ComputationalLimits">
+            <summary>
+            Gets or sets the computational limit information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.Learning">
+            <summary>
+            Gets or sets the learning type information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.SensingUncertainty">
+            <summary>
+            Gets or sets the sensing uncertainty information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.EffectUncertainty">
+            <summary>
+            Gets or sets the effect uncertainty information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.Preference">
+            <summary>
+            Gets or sets the preference information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.NumberOfAgents">
+            <summary>
+            Gets or sets the coordination information of the agent.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Info.AgentInfo.Interaction">
+            <summary>
+            Gets or sets the interaction time information of the agent.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentInteractionTime">
+            <summary>
+            Depicts when the agent must reason.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentInteractionTime.Undefined">
+            <summary>
+            No information is provided about the agent's interaction time, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentInteractionTime.Offline">
+            <summary>
+            Depicts that the agent must reason before acting within the environment.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentInteractionTime.Online">
+            <summary>
+            Depicts that the agent must reason while acting within the environment.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentLearningType">
+            <summary>
+            Depicts how the agent responds to new environments.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentLearningType.Undefined">
+            <summary>
+            No information is provided about the learning type, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentLearningType.KnowledgeIsGiven">
+            <summary>
+            Depicts that the agent cannot learn in new environments, and 
+            is mostly incompatible with new environments.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentLearningType.KnowledgeIsLearned">
+            <summary>
+            Depicts that the agent is capable of learning in new environments.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentModularity">
+            <summary>
+            Depicts information about the modularity of the agent, which is the
+            extent in which the system can be decomposed into interacting modules.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentModularity.Undefined">
+            <summary>
+            No information is provided about the modularity, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentModularity.Flat">
+            <summary>
+            The model has only one level of abstraction
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentModularity.Modular">
+            <summary>
+            The model has multiple modules that is understood seperately.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentModularity.Hierarchical">
+            <summary>
+            The model is recursively decomposed into seperate modules.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentPlanningHorizon">
+            <summary>
+            Depicts how far the agent looks into the future when deciding what to do.
+            (may vary with solver)
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPlanningHorizon.Undefined">
+            <summary>
+            No information is provided about the planning horizon, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPlanningHorizon.Static">
+            <summary>
+            Depicts a horizon where the world does not change.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPlanningHorizon.FiniteStage">
+            <summary>
+            Depicts a horizon where the agent reasons from a fixed number of time steps.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPlanningHorizon.IndefiniteStage">
+            <summary>
+            Depicts a horizon where the agent reasons about a finite, 
+            but not predetermined, number of time steps.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPlanningHorizon.InfiniteStage">
+            <summary>
+            Depicts a horizon where the agent plans forever.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentPreferences">
+            <summary>
+            Depicts what the agent is attempting to achieve
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPreferences.Undefined">
+            <summary>
+            No information is provided about the preferences, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPreferences.AchievementGoal">
+            <summary>
+            Depicts that the agent is trying to achieve a single state (noted as
+            the goal)
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPreferences.ComplexPreferences">
+            <summary>
+            Depicts that the agent has complex preferences, which may involve
+            two or more goals.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPreferences.ComplexOrdinalPreferences">
+            <summary>
+            Depicts that the complex preferences of this agent is ordered.
+            (i.e. what must be achieved first)
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentPreferences.ComplexCardinalPreferences">
+            <summary>
+            Depicts that absolute values relating to complex preferences are
+            important to this agent.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentRepresentation">
+            <summary>
+            Depicts information about how an agent can reason
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentRepresentation.Undefined">
+            <summary>
+            No information is provided about the representation, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentRepresentation.ExplicitStates">
+            <summary>
+            Depicts that the agent reasons about explicit (unique) states, which
+            is a certain arrangement of the environment.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentRepresentation.Features">
+            <summary>
+            Depicts that the agent reasons about features or propositions (true/false)
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentRepresentation.IndividualsAndRelations">
+            <summary>
+            Depicts that the agent reasons based on relations on individuals.
+            </summary>
+        </member>
+        <member name="T:SSDK.AI.Agent.Info.AgentSensingUncertainty">
+            <summary>
+            Depicts whether an agent can determine its resulting environment 
+            state from its inputs.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentSensingUncertainty.Undefined">
+            <summary>
+            No information is provided about sensing uncertainty, or unknown.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentSensingUncertainty.FullyObservable">
+            <summary>
+            Depicts that the agent can observe the state of the world.
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.Agent.Info.AgentSensingUncertainty.PartiallyObservable">
+            <summary>
+            Depicts that the agent knows there are a number of states
+            from the inputs.
+            </summary>
         </member>
         <member name="T:SSDK.AI.Agent.Solvers.AStarSolver">
             <summary>

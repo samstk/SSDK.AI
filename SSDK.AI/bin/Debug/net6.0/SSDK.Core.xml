@@ -527,11 +527,18 @@
         </member>
         <member name="M:SSDK.Core.Helpers.StringHelper.InsertOverwriteCenter(System.String,System.Int32,System.String)">
             <summary>
-            Inserts a string at a position by overwriting the original string.
+            Inserts a string at a position by overwriting the original string from the center.
             </summary>
             <param name="original">the original string</param>
             <param name="index">the index to insert at</param>
             <param name="toInsert">the string to insert</param>
+        </member>
+        <member name="M:SSDK.Core.Helpers.StringHelper.SpaceOutCapitals(System.String)">
+            <summary>
+            Inserts a space before every capital after the initial character.
+            </summary>
+            <param name="original">the original string to space out</param>
+            <returns>the spaced out string</returns>
         </member>
         <!-- Badly formed XML comment ignored for member "T:SSDK.Core.Structures.Graphs.GraphHelper" -->
         <member name="M:SSDK.Core.Structures.Graphs.GraphHelper.GetTotalDistance``1(System.Collections.Generic.IEnumerable{SSDK.Core.Structures.Graphs.GraphEdge{``0}})">
