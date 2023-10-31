@@ -26,7 +26,7 @@ namespace SSDK.AI.Agent.Solvers
     public class UCSSolver : AgentSolver
     {
 
-        public override bool Check(Agent agent, AgentOperation operation)
+        public override bool Check(AgentProblemSpace problemSpace, AgentProblemSpace desiredSpace, Agent agent, AgentOperation operation)
         {
             // Always believe that an operation resulting from UCS is accurate.
             return true;
@@ -38,11 +38,11 @@ namespace SSDK.AI.Agent.Solvers
         /// </summary>
         /// <param name="agent">the agent to solve</param>
         /// <returns>an operation attempts to lead the agent to the desired space</returns>
-        public override AgentOperation Solve(Agent agent)
+        public override AgentOperation Solve(AgentProblemSpace problemSpace, AgentProblemSpace desiredSpace, Agent agent)
         {
             // Solve UCS by constructing expanding graph.
             Graph<AgentProblemSpace> graph = new Graph<AgentProblemSpace>();
-            GraphVertex<AgentProblemSpace> startingNode = graph.Add(agent.CurrentProblemSpace);
+            GraphVertex<AgentProblemSpace> startingNode = graph.Add(problemSpace);
 
             // Generate queue for problem spaces
             PriorityQueue<GraphVertex<AgentProblemSpace>, UncontrolledNumber> frontierQueue = new ();
@@ -50,7 +50,7 @@ namespace SSDK.AI.Agent.Solvers
             // Initialise the explore set and frontier set (vertex may require updating so use dictionary)
             Dictionary<AgentProblemSpace, GraphVertex<AgentProblemSpace>> exploredSet = new ();
             Dictionary<AgentProblemSpace, GraphVertex<AgentProblemSpace>> frontierSet = new ();
-            frontierSet.Add(agent.CurrentProblemSpace, startingNode);
+            frontierSet.Add(problemSpace, startingNode);
             
             frontierQueue.Enqueue(startingNode, 0);
             
@@ -68,7 +68,7 @@ namespace SSDK.AI.Agent.Solvers
                 exploredSet.Add(explorationSpace, explorationVertex);
 
                 // Check if desired state is found.
-                double dist = explorationSpace.DistanceTo(agent.DesiredProblemSpace);
+                double dist = explorationSpace.DistanceTo(desiredSpace);
                 if (dist <= MatchTolerance)
                 {
                     // Generate operation based on found path, where all edges to should have one element only.
@@ -127,7 +127,7 @@ namespace SSDK.AI.Agent.Solvers
         }
 
         private List<AgentOperation> AllOperations = null;
-        public override void UpdateProblem(Agent agent)
+        public override void UpdateProblem(AgentProblemSpace problemSpace, AgentProblemSpace desiredSpace, Agent agent)
         {
             // Simply populate list of actions, assuming that agent actions can't change.
             AllOperations = agent.ActionSpace.AllSingleStepOperations;

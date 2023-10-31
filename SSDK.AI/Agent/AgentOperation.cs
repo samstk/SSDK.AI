@@ -32,6 +32,18 @@ namespace SSDK.AI.Agent
         public int ActionType { get; private set; } = -1;
 
         /// <summary>
+        /// An additional argument of the operation.
+        /// </summary>
+        public object Argument { get; set; }
+
+        /// <summary>
+        /// An additional tag of the operation, in which
+        /// some solvers will set when additional actions may 
+        /// be required.
+        /// </summary>
+        public AgentObject SolvedTag { get; set; }
+
+        /// <summary>
         /// The steps of the execution which must run in sequence.
         /// </summary>
         public List<AgentOperationStep> Steps { get; private set; } = new List<AgentOperationStep>();
@@ -191,7 +203,9 @@ namespace SSDK.AI.Agent
         {
             AgentOperation operation = new AgentOperation()
             {
-                ActionType = ActionType
+                ActionType = ActionType,
+                Argument = Argument,
+                SolvedTag = SolvedTag
             };
 
             foreach(AgentOperationStep step in Steps)
@@ -220,6 +234,17 @@ namespace SSDK.AI.Agent
         public static AgentOperation Single(int actionType)
         {
             return new AgentOperation() { ActionType = actionType };
+        }
+
+        /// <summary>
+        /// Creates an operation from a single vague action type and/or argument.
+        /// </summary>
+        /// <param name="actionType">an action type which may be intepreted by the problem space.</param>
+        /// <param name="argument">an additional argument  that may be required for the operation</param>
+        /// <returns>the operation representing the action type</returns>
+        public static AgentOperation Single(int actionType, object argument )
+        {
+            return new AgentOperation() { ActionType = actionType, Argument = argument };
         }
 
         /// <summary>

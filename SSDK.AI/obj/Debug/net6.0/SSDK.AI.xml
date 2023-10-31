@@ -147,6 +147,11 @@
             Inclusive.
             </summary>
         </member>
+        <member name="P:SSDK.AI.Agent.AgentAction.Tag">
+            <summary>
+            A tag that may be required for prediction.
+            </summary>
+        </member>
         <member name="P:SSDK.AI.Agent.AgentAction.Action">
             <summary>
             Gets the action handler that performs the action on the agent's
@@ -159,7 +164,7 @@
             to determine best paths.
             </summary>
         </member>
-        <member name="M:SSDK.AI.Agent.AgentAction.#ctor(SSDK.AI.Agent.AgentActionHandler,SSDK.AI.Agent.AgentCostFunction,System.Int32,System.Int32)">
+        <member name="M:SSDK.AI.Agent.AgentAction.#ctor(SSDK.AI.Agent.AgentActionHandler,SSDK.AI.Agent.AgentCostFunction,System.Int32,System.Int32,System.Object)">
             <summary>
             Defines a new agent operation which takes an action handler, and allows
             a certain range of values from (min-max) inclusive, to be passed to the 
@@ -175,6 +180,26 @@
             </param>
             <param name="minRange">the min target integer</param>
             <param name="maxRange">the max target integer inclusive</param>
+            <param name="tag">tag for reference purposes</param>
+        </member>
+        <member name="M:SSDK.AI.Agent.AgentAction.#ctor(System.String,SSDK.AI.Agent.AgentActionHandler,SSDK.AI.Agent.AgentCostFunction,System.Int32,System.Int32,System.Object)">
+            <summary>
+            Defines a new agent operation which takes an action handler, and allows
+            a certain range of values from (min-max) inclusive, to be passed to the 
+            handler every solution.
+            </summary>
+            <param name="name">name of the action for reference purposes</param>
+            <param name="actionHandler">
+            the action handler that performs the action on the agent's
+            world, using an integer to specify an argument.
+            </param>
+            <param name="costHandler">
+            the cost calculation function that takes the agent, a target within min-max,
+            and returns the estimated cost to perform the action.
+            </param>
+            <param name="minRange">the min target integer</param>
+            <param name="maxRange">the max target integer inclusive</param>
+            <param name="tag">tag for reference purposes</param>
         </member>
         <member name="T:SSDK.AI.Agent.AgentPromptFunction">
             <summary>
@@ -265,6 +290,24 @@
             then use a single AgentAction with different target ranges to achieve this.
             </param>
         </member>
+        <member name="T:SSDK.AI.Agent.AgentObject">
+            <summary>
+            Depicts an object attached an agent, operation or action.
+            </summary>
+        </member>
+        <member name="M:SSDK.AI.Agent.AgentObject.Modify(SSDK.AI.Agent.AgentOperation)">
+            <summary>
+            Modifies the object according to an agent operation
+            if applicable.
+            </summary>
+            <param name="operation">the operation to modify with</param>
+        </member>
+        <member name="M:SSDK.AI.Agent.AgentObject.Clone">
+            <summary>
+            Clones the object
+            </summary>
+            <returns>a new object which is an exact copy of this one</returns>
+        </member>
         <member name="T:SSDK.AI.Agent.AgentOperation">
             <summary>
             An agent's operation, which may have multiple sequences
@@ -287,6 +330,18 @@
             If using Agent.UpdateProblemUsingPrediction whilst using
             an integer to specific a type of action, then this will be 
             set to that integer.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.AgentOperation.Argument">
+            <summary>
+            An additional argument of the operation.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.AgentOperation.SolvedTag">
+            <summary>
+            An additional tag of the operation, in which
+            some solvers will set when additional actions may 
+            be required.
             </summary>
         </member>
         <member name="P:SSDK.AI.Agent.AgentOperation.Steps">
@@ -365,6 +420,14 @@
             Creates an operation from a single vague action type.
             </summary>
             <param name="actionType">an action type which may be intepreted by the problem space.</param>
+            <returns>the operation representing the action type</returns>
+        </member>
+        <member name="M:SSDK.AI.Agent.AgentOperation.Single(System.Int32,System.Object)">
+            <summary>
+            Creates an operation from a single vague action type and/or argument.
+            </summary>
+            <param name="actionType">an action type which may be intepreted by the problem space.</param>
+            <param name="argument">an additional argument  that may be required for the operation</param>
             <returns>the operation representing the action type</returns>
         </member>
         <member name="M:SSDK.AI.Agent.AgentOperation.Single(SSDK.AI.Agent.AgentActionExecution)">
@@ -505,7 +568,7 @@
             </summary>
             <returns>
             a value between 0 - 100% (0.0-1.0) representing how desirable this state is.
-            At 100%, the agent assumes that it achieved perfection for the goal.
+            At 100%, the agent assumes that it achieved perfection on all goals.
             </returns>
         </member>
         <member name="M:SSDK.AI.Agent.AgentProblemSpace.Predict(SSDK.AI.Agent.Agent,SSDK.AI.Agent.AgentOperation)">
@@ -530,6 +593,15 @@
             If set to 0, then the distance from one state to another to be the same must be 0.
             </summary>
         </member>
+        <member name="M:SSDK.AI.Agent.AgentSolver.UpdateProblem(SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.Agent)">
+            <summary>
+            Updates the solver's memory to account for the new problem as per 
+            agent.UpdateProblem.
+            </summary>
+            <param name="problemSpace">the problem that requires solving</param>
+            <param name="desiredSpace">the problem space that the agent desires</param>
+            <param name="agent">the agent that needs solving</param>
+        </member>
         <member name="M:SSDK.AI.Agent.AgentSolver.UpdateProblem(SSDK.AI.Agent.Agent)">
             <summary>
             Updates the solver's memory to account for the new problem as per 
@@ -537,12 +609,31 @@
             </summary>
             <param name="agent">the agent that needs solving</param>
         </member>
+        <member name="M:SSDK.AI.Agent.AgentSolver.Solve(SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.Agent)">
+            <summary>
+            Attempts to solve the agent's current problem.
+            </summary>
+            <param name="problemSpace">the problem that requires solving</param>
+            <param name="desiredSpace">the problem space that the agent desires</param>
+            <param name="agent">the agent that needs solving</param>
+            <returns>an operation on the agent, which should lead to the desired state</returns>
+        </member>
         <member name="M:SSDK.AI.Agent.AgentSolver.Solve(SSDK.AI.Agent.Agent)">
             <summary>
             Attempts to solve the agent's current problem.
             </summary>
             <param name="agent">the agent that needs solving</param>
             <returns>an operation on the agent, which should lead to the desired state</returns>
+        </member>
+        <member name="M:SSDK.AI.Agent.AgentSolver.Check(SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.Agent,SSDK.AI.Agent.AgentOperation)">
+            <summary>
+            Checks to make sure that the operation will lead to the agent's desired space.
+            </summary>
+            <param name="problemSpace">the problem that requires solving</param>
+            <param name="desiredSpace">the problem space that the agent desires</param>
+            <param name="agent">the agent that needs solving</param>
+            <param name="operation">the current operation of the agent</param>
+            <returns>true if there are no problems with the operation</returns>
         </member>
         <member name="M:SSDK.AI.Agent.AgentSolver.Check(SSDK.AI.Agent.Agent,SSDK.AI.Agent.AgentOperation)">
             <summary>
@@ -871,7 +962,7 @@
             - An informed search algorithm requiring a heuristic function to be implemented.
             </summary>
         </member>
-        <member name="M:SSDK.AI.Agent.Solvers.AStarSolver.Solve(SSDK.AI.Agent.Agent)">
+        <member name="M:SSDK.AI.Agent.Solvers.AStarSolver.Solve(SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.Agent)">
             <summary>
             Solves the agent by using Greedy Best First Search to generate an operation that computes
             the closest path while accounting for action costs.
@@ -894,13 +985,89 @@
             - A blind search algorithm
             </summary>
         </member>
-        <member name="M:SSDK.AI.Agent.Solvers.BFSSolver.Solve(SSDK.AI.Agent.Agent)">
+        <member name="M:SSDK.AI.Agent.Solvers.BFSSolver.Solve(SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.Agent)">
             <summary>
             Solves the agent by using BFS to generate an operation that computes
             the closest path without accounting for action costs.
             </summary>
             <param name="agent">the agent to solve</param>
             <returns>an operation attempts to lead the agent to the desired space</returns>
+        </member>
+        <member name="T:SSDK.AI.Agent.Solvers.Elimination.EliminationSolver">
+            <summary>
+            Depicts a solver by elimination of subproblems for an AI agent.
+            <br/>
+            Elimination Solver has the following: <br/>
+            * To be used for solving a problem that can be solved via elimination of actions and targets. <br/>
+            * SubproblemGenerator must be implemented, which populates a decreasing list of targets that can be
+              eliminated via a use of an action (on initial state only) <br/>
+            * Refactor must be implemented, which 
+            * Assumes that actions are deterministic <br/>
+            * Does not use prediction to check actions for a particular state, and instead assumes that
+              all actions are possible and will result in a state where the subproblem is removed after
+              choosing an action.
+            * Does not attempt to move to the desired space, and instead eliminates subproblems with certainty
+              (possible action count on particular problem = 1) <br/>
+            + Can be used for complex problems such as sudoku, which has no known solution from the start <br/>
+            - Assumes that actions are targets only (no ranges) <br/>
+            - Actions that lead to a undesired state are unaccounted for <br/>
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Solvers.Elimination.EliminationSolver.SubproblemGenerator">
+            <summary>
+            Gets or sets the generator for an initial problem space.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Solvers.Elimination.EliminationSolver.Refactor">
+            <summary>
+            Gets or sets the refactoring for how any action affects given subproblem. 
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Solvers.Elimination.EliminationSolver.StateRefactor">
+            <summary>
+            Gets or sets the refactoring for how any action affects the given world state (subproblem tag
+            references may be updated)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:SSDK.AI.Agent.Solvers.Elimination.EliminationSolver.Solve(SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.Agent)" -->
+        <member name="T:SSDK.AI.Agent.Solvers.Elimination.EliminationSubproblem">
+            <summary>
+            Depicts a subproblem for an elimination solver, which
+            contains a number of actions that could be applied to a
+            particular target.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Solvers.Elimination.EliminationSubproblem.Target">
+            <summary>
+            Gets or sets the target of this subproblem for reference.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Solvers.Elimination.EliminationSubproblem.Tag">
+            <summary>
+            Gets or sets the tag of the problem which may be used
+            to store information outside of the subproblem, but is relevant
+            to the subproblem.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Solvers.Elimination.EliminationSubproblem.Actions">
+            <summary>
+            Gets or sets the particular actions that could occur and effect
+            this particular target.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.Agent.Solvers.Elimination.EliminationSubproblem.RequiredAction">
+            <summary>
+            Gets or sets the required action that will eliminate this subproblem
+            on the next iteration it receives. <br/>
+            Can be used to simplify logic when actions may conflict.
+            </summary>
+        </member>
+        <member name="M:SSDK.AI.Agent.Solvers.Elimination.EliminationSubproblem.#ctor(System.Object,SSDK.AI.Agent.AgentAction[])">
+            <summary>
+            
+            </summary>
+            <param name="target"></param>
+            <param name="actions"></param>
         </member>
         <member name="T:SSDK.AI.Agent.Solvers.GBFSSolver">
             <summary>
@@ -917,7 +1084,7 @@
             - Unlike A*, does not consider action costs.
             </summary>
         </member>
-        <member name="M:SSDK.AI.Agent.Solvers.GBFSSolver.Solve(SSDK.AI.Agent.Agent)">
+        <member name="M:SSDK.AI.Agent.Solvers.GBFSSolver.Solve(SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.Agent)">
             <summary>
             Solves the agent by using Greedy Best First Search to generate an operation that computes
             the closest path while accounting for action costs.
@@ -940,7 +1107,7 @@
             - A blind search algorithm
             </summary>
         </member>
-        <member name="M:SSDK.AI.Agent.Solvers.UCSSolver.Solve(SSDK.AI.Agent.Agent)">
+        <member name="M:SSDK.AI.Agent.Solvers.UCSSolver.Solve(SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.AgentProblemSpace,SSDK.AI.Agent.Agent)">
             <summary>
             Solves the agent by using UCS to generate an operation that computes
             the closest path while accounting for action costs.

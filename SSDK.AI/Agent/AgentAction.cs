@@ -42,6 +42,11 @@ namespace SSDK.AI.Agent
         public int MaxRange { get; private set; } = 1;
 
         /// <summary>
+        /// A tag that may be required for prediction.
+        /// </summary>
+        public object Tag { get; set; }
+
+        /// <summary>
         /// Gets the action handler that performs the action on the agent's
         /// world, using an integer to specify an argument.
         /// </summary>
@@ -68,12 +73,42 @@ namespace SSDK.AI.Agent
         /// </param>
         /// <param name="minRange">the min target integer</param>
         /// <param name="maxRange">the max target integer inclusive</param>
-        public AgentAction(AgentActionHandler actionHandler, AgentCostFunction costHandler = null, int minRange = 0, int maxRange = 1)
+        /// <param name="tag">tag for reference purposes</param>
+        public AgentAction(AgentActionHandler actionHandler, AgentCostFunction costHandler = null, int minRange = 0, int maxRange = 1, object tag=null)
         {
             Action = actionHandler;
             Cost = costHandler;
             MinRange = minRange;
             MaxRange = maxRange;
+            Tag = tag;
+        }
+
+        /// <summary>
+        /// Defines a new agent operation which takes an action handler, and allows
+        /// a certain range of values from (min-max) inclusive, to be passed to the 
+        /// handler every solution.
+        /// </summary>
+        /// <param name="name">name of the action for reference purposes</param>
+        /// <param name="actionHandler">
+        /// the action handler that performs the action on the agent's
+        /// world, using an integer to specify an argument.
+        /// </param>
+        /// <param name="costHandler">
+        /// the cost calculation function that takes the agent, a target within min-max,
+        /// and returns the estimated cost to perform the action.
+        /// </param>
+        /// <param name="minRange">the min target integer</param>
+        /// <param name="maxRange">the max target integer inclusive</param>
+        /// <param name="tag">tag for reference purposes</param>
+        public AgentAction(string name, AgentActionHandler actionHandler, 
+            AgentCostFunction costHandler = null, int minRange = 0, int maxRange = 1, object tag=null)
+        {
+            Name = name;
+            Action = actionHandler;
+            Cost = costHandler;
+            MinRange = minRange;
+            MaxRange = maxRange;
+            Tag = tag;
         }
     }
 }

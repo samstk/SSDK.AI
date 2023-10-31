@@ -25,7 +25,7 @@ namespace SSDK.AI.Agent.Solvers
     public class BFSSolver : AgentSolver
     {
 
-        public override bool Check(Agent agent, AgentOperation operation)
+        public override bool Check(AgentProblemSpace problemSpace, AgentProblemSpace desiredSpace, Agent agent, AgentOperation operation)
         {
             // Always believe that an operation resulting from BFS is accurate.
             return true;
@@ -37,11 +37,11 @@ namespace SSDK.AI.Agent.Solvers
         /// </summary>
         /// <param name="agent">the agent to solve</param>
         /// <returns>an operation attempts to lead the agent to the desired space</returns>
-        public override AgentOperation Solve(Agent agent)
+        public override AgentOperation Solve(AgentProblemSpace problemSpace, AgentProblemSpace desiredSpace, Agent agent)
         {
             // Solve BFS by constructing expanding graph.
             Graph<AgentProblemSpace> graph = new Graph<AgentProblemSpace>();
-            GraphVertex<AgentProblemSpace> startingNode = graph.Add(agent.CurrentProblemSpace);
+            GraphVertex<AgentProblemSpace> startingNode = graph.Add(problemSpace);
 
             // Generate queue for problem spaces
             Queue<GraphVertex<AgentProblemSpace>> frontierQueue = new Queue<GraphVertex<AgentProblemSpace>>();
@@ -62,7 +62,7 @@ namespace SSDK.AI.Agent.Solvers
                 exploredSet.Add(explorationSpace);
 
                 // Check if desired state is found.
-                double dist = explorationSpace.DistanceTo(agent.DesiredProblemSpace);
+                double dist = explorationSpace.DistanceTo(desiredSpace);
                 if (dist <= MatchTolerance)
                 {
                     // Generate operation based on found path (leading edge allows for backtracing)
@@ -100,7 +100,7 @@ namespace SSDK.AI.Agent.Solvers
         }
 
         private List<AgentOperation> AllOperations = null;
-        public override void UpdateProblem(Agent agent)
+        public override void UpdateProblem(AgentProblemSpace problemSpace, AgentProblemSpace desiredSpace, Agent agent)
         {
             // Simply populate list of actions, assuming that agent actions can't change.
             AllOperations = agent.ActionSpace.AllSingleStepOperations;

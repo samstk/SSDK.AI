@@ -87,7 +87,7 @@ namespace SSDK.AI.Agent
 
         public override string ToString()
         {
-            return Target.ToString();
+            return $"{Action.Name} ({Target})";
         }
     }
 }

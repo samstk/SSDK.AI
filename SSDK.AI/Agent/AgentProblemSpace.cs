@@ -61,7 +61,7 @@ namespace SSDK.AI.Agent
         /// </summary>
         /// <returns>
         /// a value between 0 - 100% (0.0-1.0) representing how desirable this state is.
-        /// At 100%, the agent assumes that it achieved perfection for the goal.
+        /// At 100%, the agent assumes that it achieved perfection on all goals.
         /// </returns>
         public virtual double Desirability(Agent agent)
         {

@@ -108,14 +108,15 @@ namespace SSDK.AI.Agent
         {
             CurrentProblemSpace?.Perceive(this);
 
-            if (DesiredProblemSpace == null) return;
-
-            // Update next desired space if current problem space matches desired space.
-            if (CurrentProblemSpace.DistanceTo(DesiredProblemSpace) <= DesiredProblemSpace.MatchTolerance)
+            if (DesiredProblemSpace != null)
             {
-                if (ProblemDivisionQueue.Count > 0)
+                // Update next desired space if current problem space matches desired space.
+                if (CurrentProblemSpace.DistanceTo(DesiredProblemSpace) <= DesiredProblemSpace.MatchTolerance)
                 {
-                    DesiredProblemSpace = ProblemDivisionQueue.Dequeue();
+                    if (ProblemDivisionQueue.Count > 0)
+                    {
+                        DesiredProblemSpace = ProblemDivisionQueue.Dequeue();
+                    }
                 }
             }
 
