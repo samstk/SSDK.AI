@@ -97,7 +97,6 @@ namespace SSDK.AI.KBS.Logic
 
         public override void SolveAssertTrue(KB kb)
         {
-            About.Solved = true;
             About.IsClass = true;
             About.Relations.Add(Class.CreateRelation(To));
             base.SolveAssertTrue(kb);
@@ -105,7 +104,6 @@ namespace SSDK.AI.KBS.Logic
 
         public override void SolveAssertFalse(KB kb)
         {
-            About.Solved = true;
             About.IsClass = true;
             About.Relations.Add(Class.CreateRelation(To).GetInverse());
             base.SolveAssertFalse(kb);

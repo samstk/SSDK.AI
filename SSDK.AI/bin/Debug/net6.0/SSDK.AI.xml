@@ -1115,6 +1115,273 @@
             <param name="agent">the agent to solve</param>
             <returns>an operation attempts to lead the agent to the desired space</returns>
         </member>
+        <member name="T:SSDK.AI.CSP.CSP">
+            <summary>
+            Represents an instance of a constraint satisfaction problem.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSP.Variables">
+            <summary>
+            Gets or sets the variables that this CSP is interested in solving.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSP.Constraints">
+            <summary>
+            Gets or sets the constraints of this satisfaction problem.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSP.IsValid">
+            <summary>
+            Checks the assignment of variables against every constraint.
+            Does not consider unassigned values.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSP.Solved">
+            <summary>
+            True if the CSP was solved.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSP.IsComplete">
+            <summary>
+            Checks whether all variables has a solution.
+            </summary>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSP.AddUniqueConstraint(SSDK.AI.CSP.CSPVariable[])">
+            <summary>
+            Adds a unique constraint for a list of variables (i.e. each 
+            variable must not intersect).
+            </summary>
+            <remarks>
+            This constraint may require a variable's solution to be disjoint within the given list,
+            however it does impose a constraint requiring a value to be present (see AddContainmentConstraint),
+            which may speed-up the solving of the CSP. Only effective on solved variables.
+            <br/>
+            This constraint contains no hint of solving variables.
+            </remarks>
+            <param name="variables">the variables which must be distinct from each other</param>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSP.AddContainmentConstraint(SSDK.AI.CSP.CSPVariable[],System.Object[])">
+            <summary>
+            Adds a containment constraint which ensures every domain value
+            is contained at least once within the variables.
+            </summary>
+            <remarks>
+            Despite being added in a single function, the number of constraints added
+            is equal to the length of the domain values list.
+            <br/>
+            This constraint contains a hint for solving variables by elimination
+            (i.e. if no other variable can contain the value, then a particular
+            variable must contain the value)
+            </remarks>
+            <param name="variables">the variables to check</param>
+            <param name="domainValues">the domain value to ensure is included</param>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSP.AddConstraint(SSDK.AI.CSP.CSPConstraint)">
+            <summary>
+            Adds a unique constraint for a list of variables (i.e. each 
+            variable must not intersect).
+            </summary>
+            <param name="variables">the variables which must be distinct from each other</param>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSP.ReduceVariableDomains">
+            <summary>
+            Trims the domains of every variable. If any constraints fails for a particular value of an existing domain,
+            then it is removed from the domain.
+            </summary>
+            <remarks>
+            Trimming domains must be done before solving.
+            </remarks>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSP.Solve">
+            <summary>
+            Attempts to solve the constraint satisfaction problem
+            (i.e. the values of all variables inside the problem), giving
+            the first solution.
+            </summary>
+            <remarks>
+            Each CSP can only be solved once, due to removal of domains
+            whilst solving.
+            </remarks>
+        </member>
+        <member name="T:SSDK.AI.CSP.CSPConstraint">
+            <summary>
+            Represents a constraint within a CSP (Constraint-Satisfaction-Problem)
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPConstraint.ConstraintChecker">
+            <summary>
+            Gets the constraint checking function which formed this constraint
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPConstraint.ConstraintHint">
+            <summary>
+            Gets the hint of the constraint, which allows assumptions 
+            of a particular value of a variable to be made based on the dynamics of the constraint<br/>
+            (e.g. a containment constraint - see AddContainmentConstraint - requires that the
+            given list of variables' domains must contain a domain value at least once, and
+            if no other variable has the value in its domain, then a particular variable with that
+            domain value must be solved to that value)
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPConstraint.RelatedVariables">
+            <summary>
+            Gets the related variables of this constraint.
+            </summary>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPConstraint.#ctor(SSDK.AI.CSP.CSPConstraintChecker,SSDK.AI.CSP.CSPVariable[],SSDK.AI.CSP.CSPConstraintHint,System.String)">
+            <summary>
+            Creates a CSP constraint with referenced variables
+            </summary>
+            <param name="relatedVariables">the related variables of this constraint</param>
+            <param name="constraintChecker">the function to check whether the constraint holds</param>
+            <param name="hint">
+            a hint of the constraint, which allows assumptions 
+            of a particular value of a variable to be made based on the dynamics of the constraint<br/>
+            (e.g. a containment constraint - see AddContainmentConstraint - requires that the
+            given list of variables' domains must contain a domain value at least once, and
+            if no other variable has the value in its domain, then a particular variable with that
+            domain value must be solved to that value)</param>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPConstraint.Holds">
+            <summary>
+            Gets whether the constraint holds
+            </summary>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPConstraint.GetHint">
+            <summary>
+            Gets the next hint of this constraint.
+            </summary>
+            <returns>(null,null) if no hint exists, or the variable and solution if it does</returns>
+        </member>
+        <member name="T:SSDK.AI.CSP.CSPDomain">
+            <summary>
+            Represents a domain within a CSP problem.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPDomain.Values">
+            <summary>
+            Gets or sets the possible values within the domain
+            </summary>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPDomain.#ctor(System.Collections.Generic.HashSet{System.Object})">
+            <summary>
+            Creates a domain with the given values.
+            </summary>
+            <param name="values">the set of values that this domain contains</param>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPDomain.Set(System.Object)">
+            <summary>
+            Sets the domain to a single value
+            </summary>
+            <param name="obj">the singular possible value in this domain</param>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPDomain.Add(System.Object)">
+            <summary>
+            Adds a value to the domain
+            </summary>
+            <param name="obj">the value to add</param>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPDomain.Remove(System.Object)">
+            <summary>
+            Removes the value to the domain
+            </summary>
+            <param name="obj">the value to remove</param>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPDomain.ValueAt(System.Int32)">
+            <summary>
+            Gets the value at the given index of the set
+            </summary>
+            <param name="index">the index to retrieve the value from</param>
+            <returns></returns>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPDomain.Contains(System.Object)">
+            <summary>
+            Tests whether the object is within the domain.
+            </summary>
+            <param name="obj">the value to test</param>
+            <returns>true if the domain contains the object</returns>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPDomain.FirstValue">
+            <summary>
+            Gets the first value in the set enumerator.
+            (accurate if count = 1)
+            </summary>
+            <returns>the first value in the set enumerator</returns>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPDomain.Clone">
+            <summary>
+            Clones the domain into a new instance
+            </summary>
+            <returns>a new domain, which is an exact copy of this</returns>
+        </member>
+        <member name="T:SSDK.AI.CSP.CSPVariable">
+            <summary>
+            Represents a variable within a CSP (Constraint-Satisfaction-Problem)
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPVariable.Name">
+            <summary>
+            Gets or sets the name of the variable for reference
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPVariable.Tag">
+            <summary>
+            Gets or sets the tag of the variable
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPVariable.Solved">
+            <summary>
+            Gets whether the variable has been solved within a CSP.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPVariable.Solution">
+            <summary>
+            Gets the singular solution of this variable.
+            Accurate if Solved=true
+            </summary>
+        </member>
+        <member name="F:SSDK.AI.CSP.CSPVariable.BacktrackingIndex">
+            <summary>
+            Gets the 
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPVariable.Domain">
+            <summary>
+            Gets or sets the domain of the variable.
+            </summary>
+        </member>
+        <member name="P:SSDK.AI.CSP.CSPVariable.RelatedConstraints">
+            <summary>
+            Gets the constraints that relates to this variable.
+            </summary>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPVariable.ReduceRelatedDomains">
+            <summary>
+            Attempts to reduce related domains of other variables
+            related to this variable.
+            </summary>
+            <remarks>
+            Only effective if this variable is solved.
+            If used when variable is unsolved and Solution is inaccurate,
+            then may eliminate incorrect values from domain.
+            </remarks>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPVariable.ReduceDomain">
+            <summary>
+            Trims the domains of this variable
+            (i.e. if any constraints fails for a particular value of an existing domain,
+            then it is removed)
+            </summary>
+            <remarks>
+            Cannot reduce the domain if the variable is solved.
+            </remarks>
+        </member>
+        <member name="M:SSDK.AI.CSP.CSPVariable.SetSolution(System.Object)">
+            <summary>
+            Sets the solution of this variable.
+            </summary>
+            <param name="solution">the solution of this variable</param>
+        </member>
         <member name="T:SSDK.AI.KBS.Arithmetic.KBAdd">
             <summary>
             Represents a add operation on a constant (e.g. 1 + 2)
@@ -1365,6 +1632,12 @@
             Gets a list of symbols mentioned in the assertions.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:SSDK.AI.KBS.KB.AddSymbols(SSDK.AI.KBS.KBSymbol[])">
+            <summary>
+            Adds the given symbols to the existing symbols dictionary
+            </summary>
+            <param name="symbols">the symbols to add</param>
         </member>
         <member name="T:SSDK.AI.KBS.KBBooleanSymbol">
             <summary>

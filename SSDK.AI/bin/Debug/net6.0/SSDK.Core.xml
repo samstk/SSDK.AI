@@ -81,6 +81,16 @@
             </param>
             <returns>the graph traversal of the search</returns>
         </member>
+        <member name="M:SSDK.Core.Algorithms.Graphs.ShortestPath.BFS.BreadthFirstMultiSearch``1(SSDK.Core.Structures.Graphs.Graph{``0},SSDK.Core.Structures.Graphs.GraphVertex{``0},SSDK.Core.Structures.Graphs.GraphVertex{``0})">
+            <summary>
+            Performs breadth-first search (bfs) on the graph and given vertex (unweighted).
+            Instead of returning the first found shortest path, instead returns all shortest paths.
+            </summary>
+            <param name="v">the vertex to start from</param>
+            <param name="vTarget">
+            if true, then the algorithm stops when the given vertex (vTarget) is reached.
+            </param>
+        </member>
         <member name="T:SSDK.Core.Algorithms.Graphs.ShortestPath.DAGDistance">
             <summary>
             A helper/extension class that contains the algorithm for DAG distances (shortest path) search on a weighted
@@ -770,6 +780,102 @@
             </summary>
             <returns>the calculated weight (alt weight or standard weight)</returns>
         </member>
+        <member name="T:SSDK.Core.Structures.Graphs.GraphPath`1">
+            <summary>
+            Represents a path formed from multiple edges
+            </summary>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphPath`1.Edges">
+            <summary>
+            Gets the edge list storing the path. Edges are in order, and
+            store the path in which was taken (e.g. A->B->C)
+            </summary>
+            <remarks>
+            Do not modify this list, instead use GraphPath methods.
+            </remarks>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphPath`1.InitialVertex">
+            <summary>
+            Gets the initial vertex of this path
+            </summary>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphPath`1.IsWeighted">
+            <summary>
+            Gets whether the path was weighted.
+            </summary>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphPath`1.Distance">
+            <summary>
+            Gets or sets the distance, either stored by the traversal algorithm or
+            calculated from the single path back from the initial vertex.
+            </summary>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphPath`1.CacheVertices">
+            <summary>
+            Gets or sets whether the vertex list is cached.
+            Set to false if necessary to avoid conflicts with multi-thread operations.
+            </summary>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphPath`1.Vertices">
+            <summary>
+            Computes the vertices connected in the path in order.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:SSDK.Core.Structures.Graphs.GraphPath`1.Add(SSDK.Core.Structures.Graphs.GraphEdge{`0},System.Int32)" -->
+        <member name="M:SSDK.Core.Structures.Graphs.GraphPath`1.AddFrom(SSDK.Core.Structures.Graphs.GraphPath{`0})">
+            <summary>
+            Adds all edges from the given path
+            </summary>
+            <param name="path">the path containing edges to add to this path</param>
+        </member>
+        <member name="M:SSDK.Core.Structures.Graphs.GraphPath`1.AddRange(System.Collections.Generic.List{SSDK.Core.Structures.Graphs.GraphEdge{`0}})">
+            <summary>
+            Adds all edges from the given list of edges
+            </summary>
+            <param name="edges">the list of edges to add</param>
+        </member>
+        <member name="M:SSDK.Core.Structures.Graphs.GraphPath`1.Remove">
+            <summary>
+            Removes the last edge from the path.
+            </summary>
+            <remarks>
+            Multi-thread operations may interfere with Vertex list generation.
+            Use CacheVertices=false<br/>
+            </remarks>
+        </member>
+        <member name="M:SSDK.Core.Structures.Graphs.GraphPath`1.Remove(SSDK.Core.Structures.Graphs.GraphEdge{`0})">
+            <summary>
+            Removes the given edge from the path
+            </summary>
+            <param name="edge">the edge to remove</param>
+        </member>
+        <member name="M:SSDK.Core.Structures.Graphs.GraphPath`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes the given edge from the path at given index.
+            </summary>
+            <param name="index">the index to remove from the edge list</param>
+        </member>
+        <member name="M:SSDK.Core.Structures.Graphs.GraphPath`1.Reverse">
+            <summary>
+            Reverses the path and invalidates the cache for vertices.
+            </summary>
+        </member>
+        <member name="M:SSDK.Core.Structures.Graphs.GraphPath`1.Merge(SSDK.Core.Structures.Graphs.GraphPath{`0})">
+            <summary>
+            Creates a new path by merging the other path onto this path
+            (path -> other)
+            </summary>
+            <param name="other">the other path to merge exactly onto this path</param>
+            <returns>a new path which is the merged result</returns>
+            <remarks>
+            The Merge method does not check whether this path and the other path
+            is connected, and should be checked beforehand to ensure correctness
+            of paths (i.e. the last edge's vertex does not connect to the start
+            of the other path)<br/>
+            Additionally, the resulting path assumes that the two paths
+            are both weighted or both unweighted
+            </remarks>
+        </member>
         <member name="T:SSDK.Core.Structures.Graphs.GraphTraversal`1">
             <summary>
             Represents a traversal of a given graph.
@@ -789,6 +895,21 @@
             changes to the graph may conflict with this traversal.
             </remarks>
         </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphTraversal`1.InitialVertex">
+            <summary>
+            Gets the initial vertex where the traversal started.
+            </summary>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphTraversal`1.EndingVertex">
+            <summary>
+            Gets the vertex which was the target of the traversal.
+            </summary>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphTraversal`1.IsWeighted">
+            <summary>
+            Gets whether this traversal depended on edge weights
+            </summary>
+        </member>
         <member name="P:SSDK.Core.Structures.Graphs.GraphTraversal`1.VertexStates">
             <summary>
             Gets the vertex states according to vertex index
@@ -799,9 +920,20 @@
             Gets the edge states according to edge index
             </summary>
         </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphTraversal`1.Distance">
+            <summary>
+            Gets or sets the distance, either stored by the traversal algorithm or
+            calculated from the single path back from the initial vertex.
+            </summary>
+        </member>
         <member name="P:SSDK.Core.Structures.Graphs.GraphTraversal`1.VertexWeights">
             <summary>
             Gets the weight states according to vertex
+            </summary>
+        </member>
+        <member name="P:SSDK.Core.Structures.Graphs.GraphTraversal`1.EdgeWeights">
+            <summary>
+            Gets the weight states according to edge
             </summary>
         </member>
         <member name="P:SSDK.Core.Structures.Graphs.GraphTraversal`1.Configuration">
@@ -818,9 +950,20 @@
             </summary>
             <param name="newType">if specified, overwrites the current type reference</param>
         </member>
-        <member name="M:SSDK.Core.Structures.Graphs.GraphTraversal`1.GetPathBackFrom(SSDK.Core.Structures.Graphs.GraphVertex{`0},System.Int32)">
+        <member name="M:SSDK.Core.Structures.Graphs.GraphTraversal`1.GetPathBack(System.Int32)">
             <summary>
             Gets the path between the initially traversed vertex and the target vertex.
+            </summary>
+            <param name="desiredEdgeState">
+            the edge state that allows a path to be made
+            (defaults to 1 as this is generally used for discovery edges)
+            </param>
+            <returns>a list of edges that is a path from the initial vertex to the target vertex</returns>
+        </member>
+        <member name="M:SSDK.Core.Structures.Graphs.GraphTraversal`1.GetAllPathsBack(System.Int32)">
+            <summary>
+            Gets all paths between the initially traversed vertex and the target vertex, of
+            the minimum distance represented in the Distance property.
             </summary>
             <param name="target">the target vertex that was reached in the traversal</param>
             <param name="desiredEdgeState">

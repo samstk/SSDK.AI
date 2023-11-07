@@ -29,10 +29,12 @@ namespace SSDK.AI.KBS
         }
 
         public KBSymbol Is { get; private set; }
+        public KBSymbol In { get; private set; }
 
         public KB()
         {
             Is = new KBSymbol(this, "is");
+            In = new KBSymbol(this, "in");
         }
 
         /// <summary>
@@ -240,6 +242,15 @@ namespace SSDK.AI.KBS
                 }
             }
             return symbols;
+        }
+
+        /// <summary>
+        /// Adds the given symbols to the existing symbols dictionary
+        /// </summary>
+        /// <param name="symbols">the symbols to add</param>
+        public void AddSymbols(params KBSymbol[] symbols)
+        {
+            foreach (KBSymbol sym in symbols) sym.AddToKB(this);
         }
 
         public override string ToString()
