@@ -184,7 +184,8 @@ namespace SSDK.AI.CSP
             Solved = false;
             int solved = 1;
             // Snapshots used to restore from backtracking.
-            Stack<(CSPVariable, object, CSPDomain[])> assignments = new Stack<(CSPVariable, object, CSPDomain[])>();
+            Stack<(CSPVariable, object, (CSPDomain, object)[])> assignments 
+                = new Stack<(CSPVariable, object, (CSPDomain, object)[])>();
             while (solved > 0 || assignments.Count != 0)
             {
                 resolve:
@@ -280,7 +281,7 @@ namespace SSDK.AI.CSP
                 foreach(CSPVariable variable in Variables)
                 {
                     if (!variable.Solved && variable.Domain.Count < minDomain
-                        && variable.Domain.Count > 0 && variable.Solution == null)
+                        && variable.Domain.Count > 1 && variable.Solution == null)
                     {
                         minDomain = variable.Domain.Count;
                         backtrackVariable = variable;
@@ -301,7 +302,7 @@ namespace SSDK.AI.CSP
                         if (assignments.Count == 0)
                         {
                             // There exists no first variable with has a potential value so the problem is impossible.
-                            return;
+                            goto finalise;
                         }
                         else
                         {
@@ -333,6 +334,7 @@ namespace SSDK.AI.CSP
                 backtrackVariable.BacktrackingIndex++;
                 if (backtrackVariable.BacktrackingIndex >= backtrackVariable.Domain.Count)
                     backtrackVariable.BacktrackingIndex = 0;
+
                 object backtrackValue = backtrackVariable.Domain.ValueAt(backtrackVariable.BacktrackingIndex);
 
                 CSPDomain btvDomain = backtrackVariable.Domain.Clone();
@@ -346,26 +348,21 @@ namespace SSDK.AI.CSP
                     backtrackVariable.Solved = false;
                     backtrackVariable.Solution = null;
                     backtrackVariable.Domain = btvDomain;
-
-                    if (backtrackVariable.Domain.Count == 1)
-                    {
-                        goto backtrack;
-                    }
-                    else
-                        backtrackVariable.Domain.Remove(backtrackValue);
+                    backtrackVariable.Domain.Remove(backtrackValue);
                     solved++;
                     continue;
                 }
 
                 // Create a 'snapshot' of the domains currently present in the variables.
-                CSPDomain[] domains = new CSPDomain[Variables.Count];
+                (CSPDomain, object)[] snapshot = new (CSPDomain, object)[Variables.Count];
                 for (int i = 0; i < Variables.Count; i++)
                 {
-                    domains[i] = Variables[i].Domain.Clone();
+                    snapshot[i] = (Variables[i].Domain.Clone(), Variables[i].Solution);
                 }
-                domains[btvIndex] = btvDomain;
 
-                assignments.Push((backtrackVariable, backtrackValue, domains));
+                snapshot[btvIndex] = (btvDomain, null);
+
+                assignments.Push((backtrackVariable, backtrackValue, snapshot));
 
                 // Reduce all relevant domains of the variable
                 backtrackVariable.ReduceRelatedDomains();
@@ -375,19 +372,21 @@ namespace SSDK.AI.CSP
                 if (assignments.Count == 0)
                 {
                     // Unsolved
-                    return;
+                    goto finalise;
                 }
                 
                 // The current problem may be an invalid branch
                 // of our original problem, so we must backtrack.
-                (CSPVariable btVariable, object assignment, CSPDomain[] lastDomains) = assignments.Pop();
+                (CSPVariable btVariable, object assignment, (CSPDomain, object)[] lastSnapshot) = assignments.Pop();
                 btVariable.Solution = null;
                 btVariable.Solved = false;
 
                 // Restore domains prior to assignment.
                 for (int i = 0; i < Variables.Count; i++)
                 {
-                    Variables[i].Domain = lastDomains[i];
+                    CSPVariable variable = Variables[i];
+                    (variable.Domain, variable.Solution) = lastSnapshot[i];
+                    variable.Solved = variable.Solution != null;
                 }
 
                 if (btVariable.Domain.Count == 1)
@@ -401,6 +400,8 @@ namespace SSDK.AI.CSP
                     btVariable.Domain.Remove(assignment);
                 }
                 goto enterBacktrackStep;
+                finalise:
+                break;
             }
         }
     }
